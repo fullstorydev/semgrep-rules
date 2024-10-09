@@ -1,0 +1,68 @@
+rules:
+  - id: gcs-path-traversal
+    languages: [go]
+    severity: WARNING
+    message: An GCS found to be crafted from user-input `$REQUEST`
+      and concatenated with a possible base folder `$FOLDER`. This could indicate
+      that the access should be retricted to `$FOLDER`. However, using user input to concatenate the
+      final GCS folder path may allow an attacker to access files they should not be able to access.
+    options:
+      interfile: true
+    metadata:
+      cwe:
+        - "CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal')"
+      references:
+        - https://owasp.org/www-community/attacks/Path_Traversal
+      category: security
+      subcategory:
+        - audit
+      technology:
+        - go
+      confidence: MEDIUM
+      description: "An HTTP redirect was found to be crafted from user-input leading to an open redirect vulnerability"
+      impact: MEDIUM
+      likelihood: LOW
+      interfile: true
+    mode: taint
+    pattern-sources:
+      - label: INPUT
+        patterns:
+          - pattern-either:
+              - pattern: |
+                  ($REQUEST : *http.Request).$ANYTHING
+              - pattern: |
+                  ($REQUEST : http.Request).$ANYTHING
+          - metavariable-regex:
+              metavariable: $ANYTHING
+              regex: ^(BasicAuth|Body|Cookie|Cookies|Form|FormValue|GetBody|Host|MultipartReader|ParseForm|ParseMultipartForm|PostForm|PostFormValue|Referer|RequestURI|Trailer|TransferEncoding|UserAgent|URL)$
+      - label: CONCATENATION
+        requires: INPUT
+        patterns:
+          - pattern-either:
+              - pattern: |
+                  "$FOLDER" + $INPUT
+              - patterns:
+                  - pattern-either:
+                      - pattern: fmt.Fprintf($F, "$FOLDER", $INPUT, ...)
+                      - pattern: fmt.Sprintf("$FOLDER", $INPUT, ...)
+                      - pattern: $FULLPATH := fmt.Sprintf("$FOLDER", $INPUT, ...)
+                      - pattern: fmt.Printf("$FOLDER", $INPUT, ...)
+      - label: CLEAN
+        requires: INPUT
+        patterns:
+          - pattern-either:
+              - pattern: |
+                  $RE := regexp.MustCompile(`[^\w\-\/\.]`)
+                  $RE.ReplaceAllString($INPUT, "")
+              - patterns:
+                  - pattern-either:
+                      - pattern: fmt.Fprintf($F, "$FOLDER", $INPUT, ...)
+                      - pattern: fmt.Sprintf("$FOLDER", $INPUT, ...)
+                      - pattern: $FULLPATH := fmt.Sprintf("$FOLDER", $INPUT, ...)
+                      - pattern: fmt.Printf("$FOLDER", $INPUT, ...)
+    pattern-sinks:
+      - requires: (INPUT and CONCATENATION) and not CLEAN
+        patterns:
+          - pattern: |
+              $STORAGE.Object($FULLPATH)
+          - focus-metavariable: $FULLPATH

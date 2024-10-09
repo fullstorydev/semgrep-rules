@@ -1,0 +1,34 @@
+rules:
+  - id: missing-close-on-file
+    message: Potential file descriptor leak due to missing Close() on `$FILE`
+    languages:
+      - go
+    severity: INFO
+    metadata:
+      cwe:
+        - "CWE-404: Improper Resource Shutdown or Release"
+      category: security
+      subcategory:
+        - vuln
+      confidence: MEDIUM
+      impact: LOW
+      likelihood: LOW
+      technology:
+        - go
+      description: Handling of open file descriptors
+      references:
+        - https://daily.dev/blog/10-golang-memory-leak-prevention-tips
+    patterns:
+      - pattern: |
+          $FILE, $ERR := $FILECREATE(...)
+      - pattern-not-inside: |
+          $FILE, $ERR := $FILECREATE(...)
+          ...
+          defer $FILE.Close()
+      - pattern-not-inside: |
+          $FILE, $ERR := $FILECREATE(...)
+          ...
+          $FILE.Close()
+      - metavariable-regex:
+          metavariable: $FILECREATE
+          regex: ^(ioutil.TempFile|os.CreateTemp|os.Create|os.Open)$

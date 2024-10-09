@@ -1,0 +1,40 @@
+rules:
+  - id: math-random-used
+    metadata:
+      description: Finds likely cases where `math/rand` may be used insecurely. For the optimization, we exclude functions like `Shuffle` which are realy used cryptographically
+      cwe:
+        - "CWE-338: Use of Cryptographically Weak Pseudo-Random Number Generator
+          (PRNG)"
+      owasp:
+        - A02:2021 - Cryptographic Failures
+      references:
+        - https://cheatsheetseries.owasp.org/cheatsheets/Cryptographic_Storage_Cheat_Sheet.html#secure-random-number-generation
+      category: security
+      technology:
+        - go
+      confidence: MEDIUM
+      subcategory:
+        - vuln
+      likelihood: MEDIUM
+      impact: MEDIUM
+      license: Commons Clause License Condition v1.0[LGPL-2.1-only]
+      vulnerability_class:
+        - Cryptographic Issues
+    message: Do not use `math/rand`. Use `crypto/rand` instead.
+    languages:
+      - go
+    severity: WARNING
+    patterns:
+      - pattern-either:
+          - pattern: |
+              ($RAND : rand).$FUNC(...)
+      - pattern-not: |
+          ($RAND : rand).Prime($READER, $BITS)
+      - pattern-not: |
+          ($RAND : rand).Read($BYTES)
+      - pattern-not: |
+          ($RAND : rand).Seed(...)
+      - pattern-not: |
+          ($RAND : rand).Shuffle(...)
+      - pattern-not-inside: |
+          time.$TIMEFUNC(...)

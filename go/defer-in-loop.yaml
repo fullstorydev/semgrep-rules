@@ -1,0 +1,43 @@
+rules:
+  - id: defer-in-loop
+    message: Risk of resource exhaustion due to the use of defer inside a loop
+    languages:
+      - go
+    severity: INFO
+    metadata:
+      cwe:
+        - "CWE-404: Improper Resource Shutdown or Release"
+      category: security
+      subcategory:
+        - vuln
+      confidence: MEDIUM
+      likelihood: MEDIUM
+      impact: LOW
+      technology:
+        - go
+      description: Resource leak due improper use of `defer`
+      references:
+        - https://blog.learngoprogramming.com/gotchas-of-defer-in-go-1-8d070894cb01
+    patterns:
+      - pattern-inside: |
+          for ... {
+              ...
+          }
+      - pattern: |
+          defer $X(...)
+      - pattern-not-inside: |
+          go func(...) {
+                ...
+          }(...)
+      - pattern-not-inside: |
+          func(...) {
+                ...
+          }
+      - pattern-not-inside: |
+          $G.Go(func(...) $RET {
+                ...
+          })
+      - pattern-not-inside: |
+          func(...) $RET {
+              ...
+          }(...)

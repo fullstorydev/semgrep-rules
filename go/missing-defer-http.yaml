@@ -1,0 +1,29 @@
+rules:
+  - id: missing-defer-http
+    message: Possible resource leak due to missing `Close()` on $RESP.body
+    languages:
+      - go
+    severity: INFO
+    metadata:
+      cwe:
+        - "CWE-404: Improper Resource Shutdown or Release"
+      category: security
+      subcategory:
+        - vuln
+      impact: LOW
+      likelihood: LOW
+      confidence: MEDIUM
+      technology:
+        - go
+      description: "Handling of HTTP response bodies"
+      references:
+        - https://www.j4mcs.dev/posts/golang-response-body/
+    patterns:
+      - pattern: $RESP, $ERR := $CLIENT.$METHOD($URL, ...)
+      - pattern-not-inside: |
+          $RESP, $ERR := $CLIENT.$METHOD($URL, ...)
+          ...
+          defer $RESP.Body.Close()
+      - metavariable-regex:
+          metavariable: $METHOD
+          regex: ^(Get|Head|Post|PostForm)$

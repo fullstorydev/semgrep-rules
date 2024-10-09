@@ -1,0 +1,43 @@
+rules:
+  - id: insecure-dir-creation
+    message: Creating a file or directory without checking if it exists first will not overwrite permission
+    languages: [go]
+    severity: WARNING
+    metadata:
+      cwe:
+        - "CWE-59: Improper Link Resolution Before File Access ('Link Following')"
+        - "CWE-281: Improper Preservation of Permissions"
+      category: security
+      subcategory:
+        - vuln
+      confidence: HIGH
+      impact: MEDIUM
+      likelihood: MEDIUM
+      technology:
+        - go
+      description: "Insecure handling of file and directory writes"
+      references:
+        - https://github.com/golang/go/issues/35711
+    patterns:
+      - pattern-either:
+          - pattern: ioutil.WriteFile($PATH, ..., $PERM)
+          - pattern: os.WriteFile($PATH, ..., $PERM)
+          - pattern: os.MkdirAll($PATH, $PERM)
+          - pattern: os.Mkdir($PATH, $PERM)
+      - pattern-not-inside: |
+          if ..., $ERR := os.Stat($PATH); os.IsNotExist($ERR) {
+            ...
+          }
+      - pattern-not-inside: |
+          $FI, $ERR := os.Stat($PATH)
+          if $ERR != nil && os.IsNotExist(...) {
+            ...
+          }
+      - pattern-not-inside: |
+          $FI, $ERR := os.Stat($PATH)
+          if $ERR != nil && os.IsNotExist(...) {
+            ...
+          }
+      - metavariable-comparison:
+          comparison: int($PERM) < 0o600 or int($PERM) == 0o700
+          metavariable: $PERM

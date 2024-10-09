@@ -1,0 +1,23 @@
+rules:
+  - id: creds-from-jwtconfig
+    languages:
+      - go
+    message: Loeading of sensitive JWT configuration from code using JWTConfigFromJSON. Consider using Application Default Credentials (ADC) instead.
+    severity: WARNING
+    metadata:
+      cwe:
+        - "CWE-321: Use of Hard-coded Cryptographic Key"
+      category: security
+      subcategory:
+        - audit
+      confidence: HIGH
+      impact: MEDIUM
+      likelihood: MEDIUM
+      technology:
+        - go
+      references:
+        - https://docs.datadoghq.com/code_analysis/static_analysis_rules/ruby-security/jwt-secret-hardcoded/
+        - https://cloud.google.com/docs/authentication/application-default-credentials
+      description: "Using JWT configuration from JSON rather than using service accounts could lead to exposed credentials in code and other insecure key management practices"
+    patterns:
+      - pattern: $GLE.JWTConfigFromJSON(...)
