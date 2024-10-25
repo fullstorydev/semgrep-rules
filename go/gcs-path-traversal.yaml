@@ -54,12 +54,6 @@ rules:
               - pattern: |
                   $RE := regexp.MustCompile(`[^\w\-\/\.]`)
                   $RE.ReplaceAllString($INPUT, "")
-              - patterns:
-                  - pattern-either:
-                      - pattern: fmt.Fprintf($F, "$FOLDER", $INPUT, ...)
-                      - pattern: fmt.Sprintf("$FOLDER", $INPUT, ...)
-                      - pattern: $FULLPATH := fmt.Sprintf("$FOLDER", $INPUT, ...)
-                      - pattern: fmt.Printf("$FOLDER", $INPUT, ...)
     pattern-sinks:
       - requires: (INPUT and CONCATENATION) and not CLEAN
         patterns:

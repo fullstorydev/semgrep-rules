@@ -119,7 +119,7 @@ func (g *GCSClient) readFile(ctx context.Context, filePath string) ([]byte, erro
 
 func (g *GCSClient) writeFile(ctx context.Context, filePath string, data []byte) error {
 	bucket := g.client.Bucket(bucketName)
-	// ruleid: gcs-path-traversal
+	// proruleid: gcs-path-traversal
 	obj := bucket.Object(filePath)
 
 	writer := obj.NewWriter(ctx)
