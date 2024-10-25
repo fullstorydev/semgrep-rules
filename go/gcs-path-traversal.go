@@ -70,8 +70,8 @@ func handleGCSRequest_FP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	username = sanitizeInput(username)
-	filepath = sanitizeInput(filepath)
+	// username = sanitizeInput(username)
+	// filepath = sanitizeInput(filepath)
 
 	fullPath := fmt.Sprintf("users/%s/%s", username, filepath)
 
