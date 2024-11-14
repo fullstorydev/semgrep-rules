@@ -2,9 +2,9 @@ rules:
   - id: gcs-path-traversal
     languages: [go]
     severity: WARNING
-    message: An GCS found to be crafted from user-input `$REQUEST`
+    message: A GCS file path was found to be crafted from user-input `$REQUEST`
       and concatenated with a possible base folder `$FOLDER`. This could indicate
-      that the access should be retricted to `$FOLDER`. However, using user input to concatenate the
+      that the access is expected to be restricted to `$FOLDER`. Using user input to concatenate the
       final GCS folder path may allow an attacker to access files they should not be able to access.
     options:
       interfile: true
@@ -19,7 +19,7 @@ rules:
       technology:
         - go
       confidence: MEDIUM
-      description: "An HTTP redirect was found to be crafted from user-input leading to an open redirect vulnerability"
+      description: "A GCS file path was found to be crafted from user-input which could lead to path traversal within a bucket"
       impact: MEDIUM
       likelihood: LOW
       interfile: true

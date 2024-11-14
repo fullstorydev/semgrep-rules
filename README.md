@@ -5,6 +5,8 @@ While many of the rules we create are tailored to our internal codebase, we also
 
 We are continually refining these rules and adding new ones to improve their effectiveness in finding code bugs that could result in security flaws.
 
+_Note:_ The setup of this repository was in paert inspired by other semgrep repos which we have contributed in the past, including [Semgrep's own repo of rules](https://github.com/semgrep/semgrep-rules) as well as [Trail of Bits' Semgrep repo](https://github.com/trailofbits/semgrep-rules).
+
 ### Testing
 
 You can run tests locally with:
