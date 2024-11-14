@@ -39,4 +39,4 @@ semgrep --test --test-ignore-todo --metrics=off --config ./go/iterate-over-empty
 
 | ID | Impact | Confidence | Description |
 | -- | :----: | :--------: | ----------- |
-| [math-random-used](optimizations/math-random-used.yaml) | 🟧 | 🌗 | Finds likely cases where `math/rand` may be used insecurely. For the optimization, we exclude functions like `Shuffle` which are realy used cryptographically |
+| [math-random-used](optimizations/math-random-used.yaml) | 🟧 | 🌗 | Finds likely cases where `math/rand` may be used insecurely. For the optimization, we exclude functions like `Shuffle` which are rarely used cryptographically |
