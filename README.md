@@ -1,11 +1,11 @@
 # fs-semgrep-rules
-At FullStory, we leverage Semgrep as a core tool in our security engineering efforts to detect potential issues in our codebase. This involves not only optimizing existing rules but also developing new ones to identify code patterns that could lead to security vulnerabilities.
+At Fullstory, we leverage Semgrep as a core tool in our security engineering efforts to detect potential issues in our codebase. This involves not only optimizing existing rules but also developing new ones to identify code patterns that could lead to security vulnerabilities.
 
 While many of the rules we create are tailored to our internal codebase, we also develop rules that are broadly applicable to a wide range of projects. The rules shared in this repository are designed to address common code patterns and potential vulnerabilities that are relevant to many codebases.
 
 We are continually refining these rules and adding new ones to improve their effectiveness in finding code bugs that could result in security flaws.
 
-_Note:_ The setup of this repository was in paert inspired by other semgrep repos which we have contributed in the past, including [Semgrep's own repo of rules](https://github.com/semgrep/semgrep-rules) as well as [Trail of Bits' Semgrep repo](https://github.com/trailofbits/semgrep-rules).
+_Note:_ The setup of this repository was in part inspired by other semgrep repos which we have contributed in the past, including [Semgrep's own repo of rules](https://github.com/semgrep/semgrep-rules) as well as [Trail of Bits' Semgrep repo](https://github.com/trailofbits/semgrep-rules).
 
 ### Testing
 
