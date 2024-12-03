@@ -1,6 +1,6 @@
 rules:
   - id: missing-defer-http
-    message: Possible resource leak due to missing `Close()` on $RESP.body
+    message: Possible file descriptor leak due to missing `Close()` on $RESP.body
     languages:
       - go
     severity: INFO

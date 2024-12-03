@@ -1,6 +1,8 @@
 rules:
   - id: insecure-dir-creation
-    message: Creating a file or directory without checking if it exists first will not overwrite permission
+    message: A file or directory `$FI` with restrictive permissions was created 
+      without checking if `$FI` already exists. Creating a file or directory without 
+      checking if it exists first will not overwrite permission
     languages: [go]
     severity: WARNING
     metadata:
