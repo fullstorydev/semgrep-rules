@@ -2,7 +2,7 @@ rules:
   - id: creds-from-jwtconfig
     languages:
       - go
-    message: Loeading of sensitive JWT configuration from code using JWTConfigFromJSON. Consider using Application Default Credentials (ADC) instead.
+    message: Loading of Service Account Keys from JSON file. Consider using alternative forms of service account authentication.
     severity: WARNING
     metadata:
       cwe:
@@ -16,6 +16,7 @@ rules:
       technology:
         - go
       references:
+        - https://cloud.google.com/iam/docs/best-practices-for-managing-service-account-keys#alternatives 
         - https://docs.datadoghq.com/code_analysis/static_analysis_rules/ruby-security/jwt-secret-hardcoded/
         - https://cloud.google.com/docs/authentication/application-default-credentials
       description: "Using JWT configuration from JSON rather than using service accounts could lead to exposed credentials in code and other insecure key management practices"

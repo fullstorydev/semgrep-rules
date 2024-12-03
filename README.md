@@ -7,6 +7,14 @@ We are continually refining these rules and adding new ones to improve their eff
 
 _Note:_ The setup of this repository was in part inspired by other semgrep repos which we have contributed in the past, including [Semgrep's own repo of rules](https://github.com/semgrep/semgrep-rules) as well as [Trail of Bits' Semgrep repo](https://github.com/trailofbits/semgrep-rules).
 
+### Running the rules
+
+From your terminal, navigate to the directory containing the code you want to analyze, then run the following command:
+
+```bash
+$ semgrep -f /path/to/fs/semgrep-rules
+```
+
 ### Testing
 
 You can run tests locally with:
