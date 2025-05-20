@@ -1,0 +1,56 @@
+rules:
+  - id: concurrent-writes-iteration
+    message: Concurrent `$MAP` iteration and write
+    languages:
+      - go
+    severity: ERROR
+    metadata:
+      category: security
+      cwe: "CWE-362: Concurrent Execution using Shared Resource with Improper
+        Synchronization ('Race Condition')"
+      subcategory:
+        - vuln
+      confidence: MEDIUM
+      likelihood: HIGH
+      impact: MEDIUM
+      technology:
+        - --no-technology--
+      description: Concurrent writes and iteration to a map will result in panic
+      references:
+        - https://go.dev/blog/maps#concurrency
+    patterns:
+      - pattern-either:
+          - pattern: $MAP[...] = $VALUE
+          - pattern: $MAP.$_[...] = $VALUE
+          - pattern: $UPDATER(..., $MAP, ...)
+          - pattern: $UPDATER(..., $MAP[...], ...)
+      - pattern-either:
+          - pattern-inside: |-
+              $G.Go(func(...) {
+                    ...
+              })
+          - pattern-inside: |-
+              go func(...) {
+                    ...
+              }(...)
+      - pattern-either:
+          - pattern-inside: |
+              for $K, $V := range $MAP  {
+                ...
+              }
+          - pattern-inside: |
+              for $K, $V := range $MAP.$_  {
+                ...
+              }
+      - pattern-either:
+          - pattern-inside: |
+              func $F (..., $MAP $TYPE, ...) {
+                  ...
+              }
+          - pattern-inside: |
+              $MAP = make(map[$KTYPE]$VTYPE)
+              ...
+      - pattern-not-inside: |
+          go func(..., $CPY $_, ...) {
+              ...
+          }(..., $MAP, ...)
