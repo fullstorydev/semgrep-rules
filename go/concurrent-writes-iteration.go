@@ -7,12 +7,12 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-// Positive test case 3: Map passed as parameter
+// Map passed as parameter
 func updateMap(m map[string]int) {
 	m["updated"] = 100
 }
 
-// Positive test case 4: Using errgroup for concurrent map operations
+// Using errgroup for concurrent map operations
 func positiveCase1() {
 	var g errgroup.Group
 
@@ -33,7 +33,6 @@ func positiveCase1() {
 	g.Wait()
 }
 
-// Positive test case 5: Using errgroup with a more complex structure
 type DataStore struct {
 	Items map[string]Item
 }
