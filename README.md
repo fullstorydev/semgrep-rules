@@ -42,7 +42,7 @@ semgrep --test --test-ignore-todo --metrics=off --config ./go/iterate-over-empty
 | [insecure-dir-creation](go/insecure-dir-creation.yaml) | 🟧 | 🌘 | Insecure handling of file and directory writes |
 | [missing-close-on-file](go/missing-close-on-file.yaml) | 🟩 | 🌗 | Handling of open file descriptors |
 | [missing-defer-http](go/missing-defer-http.yaml) | 🟩 | 🌗 | Handling of HTTP response bodies |
-| [text-template-unsafe-html](go/text-template-unsafe-html.yaml) | 🟥 | 🌘 |  |
+| [text-template-unsafe-html](go/text-template-unsafe-html.yaml) | 🟥 | 🌘 | Detected unsafe rendering of HTML content using text/template |
 
 
 ### optimizations

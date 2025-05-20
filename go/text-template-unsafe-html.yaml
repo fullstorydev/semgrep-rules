@@ -3,11 +3,11 @@ rules:
     options:
       symbolic_propagation: true
     message: >
-      Detected unsafe rendering of HTML content using text/template—raw HTML or
-      user-supplied content is passed directly to text/template methods,  which
+      Detected unsafe rendering of HTML content using text/template,  which
       do not auto-escape HTML.  This can lead to Cross-Site Scripting (XSS).
       Switch to html/template or ensure proper escaping.
     severity: WARNING
+    description: Detected unsafe rendering of HTML content using text/template
     metadata:
       category: security
       technology:
