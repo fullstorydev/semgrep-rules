@@ -35,16 +35,18 @@ semgrep --test --test-ignore-todo --metrics=off --config ./go/iterate-over-empty
 
 | ID | Impact | Confidence | Description |
 | -- | :----: | :--------: | ----------- |
+| [concurrent-writes-iteration](go/concurrent-writes-iteration.yaml) | 🟧 | 🌗 | Concurrent writes and iteration to a map will result in panic |
 | [creds-from-jwtconfig](go/creds-from-jwtconfig.yaml) | 🟧 | 🌘 | Using JWT configuration from JSON rather than using service accounts could lead to exposed credentials in code and other insecure key management practices |
 | [defer-in-loop](go/defer-in-loop.yaml) | 🟩 | 🌗 | Resource leak due improper use of `defer` |
-| [gcs-path-traversal](go/gcs-path-traversal.yaml) | 🟧 | 🌗 | An HTTP redirect was found to be crafted from user-input leading to an open redirect vulnerability |
+| [gcs-path-traversal](go/gcs-path-traversal.yaml) | 🟧 | 🌗 | A GCS file path was found to be crafted from user-input which could lead to path traversal within a bucket |
 | [insecure-dir-creation](go/insecure-dir-creation.yaml) | 🟧 | 🌘 | Insecure handling of file and directory writes |
 | [missing-close-on-file](go/missing-close-on-file.yaml) | 🟩 | 🌗 | Handling of open file descriptors |
 | [missing-defer-http](go/missing-defer-http.yaml) | 🟩 | 🌗 | Handling of HTTP response bodies |
+| [text-template-unsafe-html](go/text-template-unsafe-html.yaml) | 🟥 | 🌘 | Detected unsafe rendering of HTML content using text/template |
 
 
 ### optimizations
 
 | ID | Impact | Confidence | Description |
 | -- | :----: | :--------: | ----------- |
-| [math-random-used](optimizations/math-random-used.yaml) | 🟧 | 🌗 | Finds likely cases where `math/rand` may be used insecurely. For the optimization, we exclude functions like `Shuffle` which are rarely used cryptographically |
+| [math-random-used](optimizations/math-random-used.yaml) | 🟧 | 🌗 | Finds likely cases where `math/rand` may be used insecurely. For the optimization, we exclude functions like `Shuffle` which are realy used cryptographically

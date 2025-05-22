@@ -1,0 +1,65 @@
+rules:
+  - id: text-template-unsafe-html
+    options:
+      symbolic_propagation: true
+    message: >
+      Detected unsafe rendering of HTML content using text/template,  which
+      do not auto-escape HTML.  This can lead to Cross-Site Scripting (XSS).
+      Switch to html/template or ensure proper escaping.
+    severity: WARNING
+    description: Detected unsafe rendering of HTML content using text/template
+    metadata:
+      category: security
+      technology:
+        - go
+      owasp:
+        - A07:2021 - Cross-Site Scripting (XSS)
+        - A03:2021 - Injection
+      cwe:
+        - "CWE-79: Improper Neutralization of Input During Web Page Generation
+          ('Cross-site Scripting')"
+      references:
+        - https://pkg.go.dev/text/template
+        - https://pkg.go.dev/html/template
+        - https://www.veracode.com/blog/secure-development/use-golang-these-mistakes-could-compromise-your-apps-security
+      confidence: HIGH
+      likelihood: MEDIUM
+      impact: HIGH
+      vulnerability_class:
+        - Cross-Site Scripting (XSS)
+    patterns:
+      - pattern-inside: |
+          import "$IMPORT"
+          ...
+      - metavariable-regex:
+          metavariable: $IMPORT
+          regex: ^(text/template)$
+      - pattern-either:
+          - patterns:
+              - pattern-either:
+                  - pattern: |
+                      $TEMPLATE.$FUNC($HTMLSTR)
+                  - pattern: |
+                      $TEMPLATE.$FUNC(fmt.Sprintf("$HTMLSTR", $_))
+                  - pattern: |
+                      $TEMPLATE.$FUNC($HTMLSTR + $_ + $_)
+                  - pattern: |
+                      $TEMPLATE.$FUNC($_ + $_ + $HTMLSTR)
+                  - pattern: |
+                      $TEMPLATE.$_(...).$_(...).$FUNC($HTMLSTR)
+              - metavariable-comparison:
+                  comparison: re.match('.*<[^>]+>.*', $HTMLSTR)
+          - patterns:
+              - pattern-either:
+                  - pattern: |
+                      $TEMPLATE.$FUNC(..., $ARGS, ...)
+                  - pattern: |
+                      $TEMPLATE.$FUNC(..., $_ + "$ARGS", ...)
+              - metavariable-regex:
+                  metavariable: $ARGS
+                  regex: .*\.html$
+      - metavariable-regex:
+          metavariable: $FUNC
+          regex: ^(ParseFiles|ParseFS|Parse|ExecuteTemplate)$
+    languages:
+      - go
