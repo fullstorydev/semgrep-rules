@@ -25,10 +25,9 @@ rules:
       - pattern-either:
           - pattern: |
               $FUNC(..., $CTX, ...)
-      - pattern-either:
-          - pattern-inside: |
-              $G, $CTX := errgroup.WithContext($PARAMCTX)
-              ...
+      - pattern-inside: |
+          $G, $CTX := errgroup.WithContext($PARAMCTX)
+          ...
       - pattern-either:
         - pattern-inside: |
             $G.Wait()
@@ -50,4 +49,9 @@ rules:
           $G, $CTX := errgroup.WithContext($PARAMCTX)
           ...
           $_, $CTX = errgroup.WithContext($PARAMCTX)
+          ...
+      - pattern-not-inside: |
+          $G, $CTX1 := errgroup.WithContext($PARAMCTX)
+          ...
+          $_, $CTX := errgroup.WithContext($PARAMCTX)
           ...
