@@ -62,7 +62,7 @@ func badUsage(ctx context.Context) error {
 		return err
 	}
 
-	// ruleid: bad_errgroup
+	// ruleid: errgroup-cancelled-ctx-reuse
 	err = processData(ctx, "some data")
 	if err != nil {
 		return err
@@ -83,7 +83,7 @@ func goodUsage(ctx context.Context) error {
 		return err
 	}
 
-	// ok: bad_errgroup
+	// ok: errgroup-cancelled-ctx-reuse
 	err = processData(ctx, "some data")
 	if err != nil {
 		return err
@@ -99,7 +99,7 @@ func beforeWaitIsOk(ctx context.Context) error {
 		return fetchData(ctx)
 	})
 
-	// ok: bad_errgroup
+	// ok: errgroup-cancelled-ctx-reuse
 	err := processData(ctx, "some data")
 	if err != nil {
 		return err
@@ -125,7 +125,7 @@ func reassignedContext(ctx context.Context) error {
 		return err
 	}
 
-	// ok: bad_errgroup
+	// ok: errgroup-cancelled-ctx-reuse
 	ctx = context.Background()
 	err = processData(ctx, "some data")
 	if err != nil {
@@ -143,7 +143,7 @@ func multipleContextUsages(ctx context.Context) error {
 	})
 
 	g.Go(func() error {
-		// ok: bad_errgroup
+		// ok: errgroup-cancelled-ctx-reuse
 		return processData(ctx, "in goroutine")
 	})
 
@@ -152,13 +152,13 @@ func multipleContextUsages(ctx context.Context) error {
 		return err
 	}
 
-	// ruleid: bad_errgroup
+	// ruleid: errgroup-cancelled-ctx-reuse
 	err = processData(ctx, "after wait")
 	if err != nil {
 		return err
 	}
 
-	// ruleid: bad_errgroup
+	// ruleid: errgroup-cancelled-ctx-reuse
 	err = someFunc(ctx)
 	if err != nil {
 		return err
@@ -190,7 +190,7 @@ func nestedErrgroups(ctx context.Context) error {
 		return err
 	}
 
-	// ruleid: bad_errgroup
+	// ruleid: errgroup-cancelled-ctx-reuse
 	err = processData(ctx, "after second wait")
 	if err != nil {
 		return err
@@ -211,13 +211,13 @@ func differentVariableNames(ctx context.Context) error {
 		return err
 	}
 
-	// ruleid: bad_errgroup
+	// ruleid: errgroup-cancelled-ctx-reuse
 	err = processData(newCtx, "using newCtx")
 	if err != nil {
 		return err
 	}
 
-	// ok: bad_errgroup
+	// ok: errgroup-cancelled-ctx-reuse
 	err = processData(ctx, "using original ctx")
 	if err != nil {
 		return err
@@ -238,7 +238,7 @@ func contextInMultipleParams(ctx context.Context) error {
 		return err
 	}
 
-	// ruleid: bad_errgroup
+	// ruleid: errgroup-cancelled-ctx-reuse
 	fmt.Printf("Context: %v, Data: %s\n", ctx, "test")
 
 	return nil
@@ -252,12 +252,12 @@ func earlyReturn(ctx context.Context) error {
 	})
 
 	if err := g.Wait(); err != nil {
-		// ruleid: bad_errgroup
+		// ruleid: errgroup-cancelled-ctx-reuse
 		someFunc(ctx)
 		return err
 	}
 
-	// ruleid: bad_errgroup
+	// ruleid: errgroup-cancelled-ctx-reuse
 	err := processData(ctx, "after successful wait")
 	return err
 }
@@ -266,7 +266,7 @@ func withDeferredsomeFunc(ctx context.Context) error {
 	g, ctx := errgroup.WithContext(ctx)
 
 	defer func() {
-		// ruleid: bad_errgroup
+		// ruleid: errgroup-cancelled-ctx-reuse
 		someFunc(ctx)
 	}()
 
@@ -279,6 +279,26 @@ func withDeferredsomeFunc(ctx context.Context) error {
 		return err
 	}
 
-	// ruleid: bad_errgroup
+	// ruleid: errgroup-cancelled-ctx-reuse
+	return processData(ctx, "before defer")
+}
+
+func withDeferredCleanup2(ctx context.Context) error {
+	g, ctx := errgroup.WithContext(ctx)
+
+	g.Go(func() error {
+		defer func() {
+			// ok: errgroup-cancelled-ctx-reuse
+			someFunc(ctx)
+		}()
+		return fetchData(ctx)
+	})
+
+	err := g.Wait()
+	if err != nil {
+		return err
+	}
+
+	// ruleid: errgroup-cancelled-ctx-reuse
 	return processData(ctx, "before defer")
 }

@@ -43,6 +43,10 @@ rules:
               ...
             }(...)
       - pattern-not-inside: |
+          $G.Go(func(...) $_{
+            ...
+          })
+      - pattern-not-inside: |
           $G, $CTX := errgroup.WithContext($PARAMCTX)
           ...
           $_, $CTX = errgroup.WithContext($PARAMCTX)
