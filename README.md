@@ -12,7 +12,7 @@ _Note:_ The setup of this repository was in part inspired by other semgrep repos
 From your terminal, navigate to the directory containing the code you want to analyze, then run the following command:
 
 ```bash
-$ semgrep -f /path/to/fs/semgrep-rules
+$ semgrep --config=/path/to/fs/semgrep-rules
 ```
 
 ### Testing
@@ -38,6 +38,7 @@ semgrep --test --test-ignore-todo --metrics=off --config ./go/iterate-over-empty
 | [concurrent-writes-iteration](go/concurrent-writes-iteration.yaml) | 🟧 | 🌗 | Concurrent writes and iteration to a map will result in panic |
 | [creds-from-jwtconfig](go/creds-from-jwtconfig.yaml) | 🟧 | 🌘 | Using JWT configuration from JSON rather than using service accounts could lead to exposed credentials in code and other insecure key management practices |
 | [defer-in-loop](go/defer-in-loop.yaml) | 🟩 | 🌗 | Resource leak due improper use of `defer` |
+| [errgroup-cancelled-ctx-reuse](go/errgroup-cancelled-ctx-reuse.yaml) | 🟧 | 🌘 | errgroup created context is reused after it was cancelled. |
 | [gcs-path-traversal](go/gcs-path-traversal.yaml) | 🟧 | 🌗 | A GCS file path was found to be crafted from user-input which could lead to path traversal within a bucket |
 | [insecure-dir-creation](go/insecure-dir-creation.yaml) | 🟧 | 🌘 | Insecure handling of file and directory writes |
 | [missing-close-on-file](go/missing-close-on-file.yaml) | 🟩 | 🌗 | Handling of open file descriptors |

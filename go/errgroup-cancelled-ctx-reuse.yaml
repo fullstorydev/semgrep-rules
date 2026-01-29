@@ -1,0 +1,57 @@
+rules:
+  - id: errgroup-cancelled-ctx-reuse
+    message: A context object `$CTX` is reused after calling `Wait` on the associated `errgroup.Group`, which
+      cancels the `$CTX`. Depending on the function where `$CTX` us used, this could result in missed SQL or HTTP
+      calls, or other unexpected behavior. 
+    languages:
+      - go
+    metadata:
+      cwe:
+        - "CWE-404: Improper Resource Shutdown or Release"
+      category: correctness
+      subcategory:
+        - vuln
+      impact: MEDIUM
+      likelihood: LOW
+      confidence: HIGH
+      technology:
+        - go
+      description: "errgroup created context is reused after it was cancelled."
+      references:
+        - https://pkg.go.dev/golang.org/x/sync/errgroup#Group.WithContext
+        - https://gaultier.github.io/blog/subtle_bug_with_go_errgroup.html
+    severity: WARNING
+    patterns:
+      - pattern-either:
+          - pattern: |
+              $FUNC(..., $CTX, ...)
+      - pattern-inside: |
+          $G, $CTX := errgroup.WithContext($PARAMCTX)
+          ...
+      - pattern-either:
+        - pattern-inside: |
+            $G.Wait()
+            ...
+        - pattern-inside: |
+            if $_ := $G.Wait(); $_ != nil {
+              ...
+            }
+            ...
+        - pattern-inside: |
+            defer func(...){
+              ...
+            }(...)
+      - pattern-not-inside: |
+          $G.Go(func(...) $_{
+            ...
+          })
+      - pattern-not-inside: |
+          $G, $CTX := errgroup.WithContext($PARAMCTX)
+          ...
+          $_, $CTX = errgroup.WithContext($PARAMCTX)
+          ...
+      - pattern-not-inside: |
+          $G, $CTX1 := errgroup.WithContext($PARAMCTX)
+          ...
+          $_, $CTX := errgroup.WithContext($PARAMCTX)
+          ...
